@@ -55,6 +55,11 @@ jobs:
         uses: actions/configure-pages@v4
       - name: Install dependencies
         run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
+      - name: Disable Kroki module
+        run: |
+          if [ -f "config/_default/markup.toml" ]; then
+            sed -i '/\[markup\.renderHooks\.codeblock-kroki\.default\]/,/^\[/ s/^/# /' config/_default/markup.toml
+          fi
       - name: Build production website
         env:
           # For maximum backward compatibility with Hugo modules
@@ -62,9 +67,7 @@ jobs:
           HUGO_ENV: production
           TZ: America/Los_Angeles
         run: |
-          npm run build \
-            -- \
-            --baseURL "${{ steps.pages.outputs.base_url }}/"
+          npm run build -- --baseURL "${{ steps.pages.outputs.base_url }}/" --buildFuture
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
