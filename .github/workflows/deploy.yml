@@ -55,11 +55,21 @@ jobs:
         uses: actions/configure-pages@v4
       - name: Install dependencies
         run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
-      - name: Remove Kroki template
+      - name: Disable problematic templates
         run: |
-          if [ -f "node_modules/@thulite/doks-core/layouts/_markup/render-codeblock-kroki.html" ]; then
-            mv "node_modules/@thulite/doks-core/layouts/_markup/render-codeblock-kroki.html" "node_modules/@thulite/doks-core/layouts/_markup/render-codeblock-kroki.html.bak"
-          fi
+          # Create backup directory if it doesn't exist
+          mkdir -p node_modules/@thulite/doks-core/layouts/_markup/disabled_templates
+
+          # Move problematic templates to disabled_templates directory
+          for template in \
+            "node_modules/@thulite/doks-core/layouts/_markup/render-codeblock-kroki.html" \
+            "node_modules/@thulite/doks-core/layouts/_markup/render-codeblock-math.html"
+          do
+            if [ -f "$template" ]; then
+              mv "$template" "${template}.bak"
+              echo "Disabled: $template"
+            fi
+          done
       - name: Build production website
         env:
           # For maximum backward compatibility with Hugo modules
