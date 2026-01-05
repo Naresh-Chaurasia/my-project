@@ -55,10 +55,10 @@ jobs:
         uses: actions/configure-pages@v4
       - name: Install dependencies
         run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
-      - name: Disable Kroki module
+      - name: Remove Kroki template
         run: |
-          if [ -f "config/_default/markup.toml" ]; then
-            sed -i '/\[markup\.renderHooks\.codeblock-kroki\.default\]/,/^\[/ s/^/# /' config/_default/markup.toml
+          if [ -f "node_modules/@thulite/doks-core/layouts/_markup/render-codeblock-kroki.html" ]; then
+            mv "node_modules/@thulite/doks-core/layouts/_markup/render-codeblock-kroki.html" "node_modules/@thulite/doks-core/layouts/_markup/render-codeblock-kroki.html.bak"
           fi
       - name: Build production website
         env:
