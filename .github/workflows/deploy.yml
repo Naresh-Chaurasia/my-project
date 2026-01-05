@@ -63,7 +63,8 @@ jobs:
           # Move problematic templates to disabled_templates directory
           for template in \
             "node_modules/@thulite/doks-core/layouts/_markup/render-codeblock-kroki.html" \
-            "node_modules/@thulite/doks-core/layouts/_markup/render-codeblock-math.html"
+            "node_modules/@thulite/doks-core/layouts/_markup/render-codeblock-math.html" \
+            "node_modules/@thulite/images/layouts/_markup/render-image.html"
           do
             if [ -f "$template" ]; then
               mv "$template" "${template}.bak"
